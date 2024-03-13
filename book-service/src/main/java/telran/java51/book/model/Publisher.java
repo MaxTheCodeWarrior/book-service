@@ -1,10 +1,12 @@
 package telran.java51.book.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,9 +28,17 @@ public class Publisher implements Serializable {
 
 	@Id
 	String publisherName;
+	@OneToMany(mappedBy = "publisher")
+	Set<Book> books;
+
+	public Publisher(String publisherName) {
+
+		this.publisherName = publisherName;
+	}
 
 	@Override
 	public String toString() {
 		return publisherName + "";
 	}
+
 }
