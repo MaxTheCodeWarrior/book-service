@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import telran.java51.book.dto.AuthorDto;
 import telran.java51.book.dto.BookDto;
-import telran.java51.book.dto.PublisherDto;
 import telran.java51.book.service.BookService;
 
 @RequiredArgsConstructor
@@ -56,7 +55,7 @@ public class BookController {
 	}
 
 	@GetMapping("/publishers/author/{author}")
-	public Iterable<PublisherDto> findPublishersByAuthor(@PathVariable String author) {
+	public Iterable<String> findPublishersByAuthor(@PathVariable String author) {
 		return bookService.findPublishersByAuthor(author);
 	}
 

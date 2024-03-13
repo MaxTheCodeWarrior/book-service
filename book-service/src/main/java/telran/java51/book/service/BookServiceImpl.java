@@ -1,6 +1,5 @@
 package telran.java51.book.service;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,8 +13,6 @@ import telran.java51.book.dao.BookRepository;
 import telran.java51.book.dao.PublisherRepository;
 import telran.java51.book.dto.AuthorDto;
 import telran.java51.book.dto.BookDto;
-import telran.java51.book.dto.PublisherDto;
-import telran.java51.book.dto.exceptions.AuthorHasDependenciesException;
 import telran.java51.book.dto.exceptions.EntityNotFoundException;
 import telran.java51.book.model.Author;
 import telran.java51.book.model.Book;
@@ -107,21 +104,19 @@ public class BookServiceImpl implements BookService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public Iterable<PublisherDto> findPublishersByAuthor(String authorName) {
-		Author author = authorRepository.findById(authorName).orElseThrow(EntityNotFoundException::new);
-		List<Publisher> publishers = bookRepository.findBooksByAuthors(author).map(e -> e.getPublisher()).distinct()
-				.collect(Collectors.toList());
-
-		return publishers.stream().map(e -> modelMapper.map(e, PublisherDto.class)).collect(Collectors.toList());
-
+	public Iterable<String> findPublishersByAuthor(String authorName) {
+		return publisherRepository.findByPublishersByAuthor(authorName);
 	}
 
 	@Transactional
 	@Override
 	public AuthorDto removeAuthor(String authorName) {
 		Author author = authorRepository.findById(authorName).orElseThrow(EntityNotFoundException::new);
+
 		if (bookRepository.findBooksByAuthors(author).count() > 0) {
-			throw new AuthorHasDependenciesException();
+			bookRepository.deleteByAuthorsName(authorName);
+			authorRepository.delete(author);
+//			throw new AuthorHasDependenciesException();
 		} else {
 			authorRepository.delete(author);
 		}
