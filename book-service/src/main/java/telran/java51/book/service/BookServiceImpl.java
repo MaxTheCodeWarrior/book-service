@@ -36,12 +36,12 @@ public class BookServiceImpl implements BookService {
 		}
 		// Publisher
 		Publisher publisher = publisherRepository.findById(bookDto.getPublisher())
-				.orElse(publisherRepository.save(new Publisher(bookDto.getPublisher())));
+				.orElseGet(() -> publisherRepository.save(new Publisher(bookDto.getPublisher())));
 
 		// Author
 		Set<Author> author = bookDto.getAuthors().stream()
 				.map(a -> authorRepository.findById(a.getName())
-						.orElse(authorRepository.save(new Author(a.getName(), a.getBirthDate()))))
+						.orElseGet(() -> authorRepository.save(new Author(a.getName(), a.getBirthDate()))))
 				.collect(Collectors.toSet());
 
 		Book book = new Book(bookDto.getIsbn(), bookDto.getTitle(), author, publisher);
@@ -85,26 +85,21 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public Iterable<BookDto> findBooksByPublisher(String publisherName) {
 		Publisher publisher = publisherRepository.findById(publisherName).orElseThrow(EntityNotFoundException::new);
-		return publisher.getBooks().stream()
-				.map(e -> modelMapper.map(e, BookDto.class))
-				.collect(Collectors.toList());
+		return publisher.getBooks().stream().map(e -> modelMapper.map(e, BookDto.class)).collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)
 	@Override
 	public Iterable<AuthorDto> findAuthorsByBook(String isbn) {
 		Book book = bookRepository.findById(isbn).orElseThrow(EntityNotFoundException::new);
-		return book.getAuthors().stream()
-				.map(e -> modelMapper.map(e, AuthorDto.class))
-				.collect(Collectors.toList());
+		return book.getAuthors().stream().map(e -> modelMapper.map(e, AuthorDto.class)).collect(Collectors.toList());
 
 	}
 
 	@Transactional(readOnly = true)
 	@Override
 	public Iterable<String> findPublishersByAuthor(String authorName) {
-		return publisherRepository.findDistinctByBooksAuthorsName(authorName)
-				.map(Publisher::getPublisherName)
+		return publisherRepository.findDistinctByBooksAuthorsName(authorName).map(Publisher::getPublisherName)
 				.collect(Collectors.toList());
 	}
 
