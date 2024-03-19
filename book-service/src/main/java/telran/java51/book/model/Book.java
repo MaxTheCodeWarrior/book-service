@@ -5,6 +5,7 @@ import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -23,7 +24,6 @@ import lombok.Setter;
 
 @Setter
 @EqualsAndHashCode(of = "isbn")
-
 @Entity
 @Table(name = "BOOK")
 public class Book implements Serializable {
@@ -31,16 +31,12 @@ public class Book implements Serializable {
 	private static final long serialVersionUID = 8840647348644778936L;
 	@Id
 	String isbn;
-	
+
 	@Column(name = "TITLE")
 	String title;
-	
-	@ManyToMany
-	@JoinTable(
-			name = "BOOK_AUTHORS",
-			joinColumns = @JoinColumn(name = "BOOK_ISBN"),
-			inverseJoinColumns = @JoinColumn(name = "AUTHORS_NAME")
-	)
+
+	@JoinTable(name = "BOOK_AUTHORS", joinColumns = @JoinColumn(name = "BOOK_ISBN"), inverseJoinColumns = @JoinColumn(name = "AUTHORS_NAME"))
+	@ManyToMany(fetch = FetchType.EAGER)
 	Set<Author> authors;
 
 	@ManyToOne

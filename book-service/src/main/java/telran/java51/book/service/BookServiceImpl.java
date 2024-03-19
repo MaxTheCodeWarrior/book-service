@@ -54,17 +54,12 @@ public class BookServiceImpl implements BookService {
 		Book book = bookRepository.findById(isbn).orElseThrow(() -> new EntityNotFoundException());
 		return modelMapper.map(book, BookDto.class);
 	}
-
-	@Transactional
+	
 	@Override
-	public BookDto removeBook(String isbn) {
-		Book book = bookRepository.findById(isbn).orElseThrow(() -> new EntityNotFoundException());
-		try {
-			bookRepository.delete(book);
-		} catch (Exception e) {
-			e.getStackTrace();
-		}
-
+	@Transactional
+	public BookDto remove(String isbn) {
+		Book book = bookRepository.findById(isbn).orElseThrow(EntityNotFoundException::new);
+		bookRepository.deleteById(isbn);
 		return modelMapper.map(book, BookDto.class);
 	}
 

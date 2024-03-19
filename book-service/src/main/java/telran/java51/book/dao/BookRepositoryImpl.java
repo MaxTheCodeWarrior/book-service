@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import telran.java51.book.model.Author;
 import telran.java51.book.model.Book;
@@ -34,11 +35,10 @@ public class BookRepositoryImpl implements BookRepository {
 
 	@Override
 	public void deleteByAuthorsName(String name) {
-		Author author = em.find(Author.class, name);
-		if (author != null) {
-			em.createQuery("DELETE FROM Book b WHERE :author MEMBER OF b.authors").setParameter("author", author)
-					.executeUpdate();
-		}
+		Query query = em.createQuery("delete from Book b join b.authors a where a.name=?1");
+		query.setParameter(1, name);
+		query.executeUpdate();
+
 	}
 
 	@Override
@@ -57,11 +57,18 @@ public class BookRepositoryImpl implements BookRepository {
 	public Optional<Book> findById(String isbn) {
 		return Optional.ofNullable(em.find(Book.class, isbn));
 	}
-
+//
+//	@Override
+//	public void delete(Book book) {
+//		em.remove(book);
+//
+//	}
+	
 	@Override
-	public void delete(Book book) {
-		em.remove(book);
-
+	public void deleteById(String isbn) {
+			Query query = em.createQuery("DELETE FROM Book b WHERE b.isbn =?1");
+		    query.setParameter(1, isbn);
+		    query.executeUpdate();
 	}
 
 }

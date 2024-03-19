@@ -9,7 +9,7 @@ public interface BookService {
 	
 	BookDto findBookByIsbn(String isbn); 
 	
-	BookDto removeBook(String isbn);
+	BookDto remove(String isbn);
 	
 	BookDto updateBookTitle(String isbn, String newTitle);
 	

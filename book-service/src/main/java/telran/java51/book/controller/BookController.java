@@ -31,7 +31,7 @@ public class BookController {
 
 	@DeleteMapping("/book/{isbn}")
 	public BookDto removeBook(@PathVariable String isbn) {
-		return bookService.removeBook(isbn);
+		return bookService.remove(isbn);
 	}
 
 	@PutMapping("/book/{isbn}/title/{newTitle}")
