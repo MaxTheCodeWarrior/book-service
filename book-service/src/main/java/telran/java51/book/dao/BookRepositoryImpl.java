@@ -22,14 +22,14 @@ public class BookRepositoryImpl implements BookRepository {
 	public Stream<Book> findBooksByAuthors(Author author) {
 		TypedQuery<Book> query = em.createQuery("SELECT b FROM Book b WHERE :author MEMBER OF b.authors", Book.class);
 		query.setParameter("author", author);
-		return query.getResultList().stream();
+		return query.getResultStream();
 	}
 
 	@Override
 	public Stream<Book> findBooksByPublisher(Publisher publisher) {
 		TypedQuery<Book> query = em.createQuery("SELECT b FROM Book b WHERE :publisher = b.publisher", Book.class);
-		query.setParameter("author", publisher);
-		return query.getResultList().stream();
+		query.setParameter("publisher", publisher);
+		return query.getResultStream();
 	}
 
 	@Override
